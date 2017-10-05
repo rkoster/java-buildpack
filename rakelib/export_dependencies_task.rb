@@ -184,24 +184,23 @@ module Package
 
     def initialize_export_tasks(indexes)
       indexes.each do |id, index|
-        component_dir = File.join(EXPORT_DIR, id)
         index.each do |_, url|
-          dest_path = File.join(component_dir, URI(url).request_uri)
+          dest_path = File.join(File.join(EXPORT_DIR, id), URI(url).request_uri)
           multitask TASK_DEPS => [download_dependency_task(url, dest_path)]
         end
-        multitask TASK_DEPS => [rewrite_index_task(index, component_dir)]
+        multitask TASK_DEPS => [rewrite_index_task(index, id)]
       end
     end
 
-    def rewrite_index_task(index, dest_dir)
-      path = File.join(dest_dir, 'index.yml')
+    def rewrite_index_task(index, component_id)
+      path = File.join(EXPORT_DIR, component_id, 'index.yml')
       task path do |_t|
         body = index.each_with_object({}) do |(k, v), hash|
           url = URI(v).tap do |uri|
             uri.scheme = base_uri.scheme
             uri.host = base_uri.host
             uri.port = base_uri.port
-            uri.path = File.join(base_uri.path, uri.path)
+            uri.path = File.join(base_uri.path, component_id, uri.path)
           end
           hash[k] = url.to_s
         end
