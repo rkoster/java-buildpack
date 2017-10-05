@@ -204,7 +204,7 @@ module Package
           end
           hash[k] = url.to_s
         end
-        FileUtils.mkdir_p dest_dir
+        FileUtils.mkdir_p File.dirname(path)
         IO.write(path, body.to_yaml)
       end
       path
