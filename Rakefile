@@ -37,7 +37,9 @@ require 'rakelib/dependency_cache_task'
 require 'rakelib/stage_buildpack_task'
 require 'rakelib/package_task'
 require 'rakelib/versions_task'
+require 'rakelib/export_dependencies_task'
 Package::DependencyCacheTask.new
+Package::ExportDependenciesTask.new
 Package::StageBuildpackTask.new(Dir['bin/**/*', 'config/**/*', 'lib/**/*', 'resources/**/*', 'LICENSE', 'NOTICE']
                                   .reject { |f| File.directory? f })
 Package::PackageTask.new
